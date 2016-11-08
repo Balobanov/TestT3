@@ -3,5 +3,6 @@
     <persistence-unit name="test">
         <class>evg.testt.model.Contact</class>
         <class>evg.testt.model.Activity</class>
+        <class>evg.testt.model.ActivityType</class>
     </persistence-unit>
 </persistence>

@@ -1,7 +1,9 @@
 package evg.testt.controller;
 
+import evg.testt.model.ActivityType;
 import evg.testt.model.Contact;
 import evg.testt.oval.SpringOvalValidator;
+import evg.testt.service.ActivityTypeService;
 import evg.testt.service.ContactService;
 import evg.testt.util.JspPath;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,14 @@ public class ContactController {
     @Autowired
     ContactService cs;
 
-    @RequestMapping(value = {"/", "", "contacts"}, method = RequestMethod.GET)
+    @Autowired
+    ActivityTypeService atc;
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public String redirTocontact()
+    {return "redirect:/contacts";}
+
+    @RequestMapping(value = "/contacts", method = RequestMethod.GET)
     public ModelAndView toAddContact(Model model)
     {
         Contact contact = new Contact();
