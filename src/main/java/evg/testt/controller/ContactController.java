@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -109,9 +110,5 @@ public class ContactController {
         return "redirect:/activities";
     }
 
-    @RequestMapping(value = "/activities")
-    public String awdawds()
-    {
-        return "activities";
-    }
+
 }

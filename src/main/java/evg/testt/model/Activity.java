@@ -1,6 +1,7 @@
 package evg.testt.model;
 
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -13,7 +14,7 @@ public class Activity extends BaseModel{
     private String notes;
 
     @Temporal(TemporalType.DATE)
-    private Date date;
+    private Calendar date;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contacts_id")
@@ -38,11 +39,11 @@ public class Activity extends BaseModel{
         this.notes = notes;
     }
 
-    public Date getDate() {
+    public Calendar getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Calendar date) {
         this.date = date;
     }
 
