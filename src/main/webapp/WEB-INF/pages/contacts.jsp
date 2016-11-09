@@ -79,7 +79,6 @@
             <tr>
                 <td><input type="submit" value="Add contact/Edit Contact"></td>
             </tr>
-
         </sf:form>
 
         <tr>
@@ -90,9 +89,8 @@
         </tr>
     </table>
 
+
     <table>
-
-
         <table width="600px">
             <tr>
                 <td><p>Contacts</p></td>
@@ -105,7 +103,7 @@
             </c:forEach>
             <tr><td><label>-----------------------------------------------------------</label></td></tr>
         </table>
-
     </table>
+
 </body>
 </html>

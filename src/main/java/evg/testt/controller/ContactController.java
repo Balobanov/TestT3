@@ -36,7 +36,7 @@ public class ContactController {
     ContactService cs;
 
     @Autowired
-    ActivityTypeService atc;
+    ActivityTypeService ats;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String redirTocontact()

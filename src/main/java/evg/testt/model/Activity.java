@@ -1,5 +1,8 @@
 package evg.testt.model;
 
+import net.sf.oval.constraint.Length;
+import net.sf.oval.constraint.NotNull;
+
 import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,15 +13,29 @@ import java.util.Date;
 @Entity(name = "activities")
 public class Activity extends BaseModel{
 
+    @NotNull
+    @Length(min = 1)
     private String title;
     private String notes;
 
     @Temporal(TemporalType.DATE)
     private Calendar date;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne()
     @JoinColumn(name = "contacts_id")
     private Contact contact;
+
+    @ManyToOne()
+    @JoinColumn(name = "activitiesTypes_id")
+    private ActivityType activityType;
+
+    public ActivityType getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(ActivityType activityType) {
+        this.activityType = activityType;
+    }
 
     public Activity() {
     }

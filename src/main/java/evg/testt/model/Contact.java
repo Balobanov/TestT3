@@ -5,10 +5,7 @@ import net.sf.oval.constraint.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -35,7 +32,7 @@ public class Contact extends BaseModel {
     private String city;
     private String postCode;
 
-    @OneToMany(mappedBy = "contact", orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "contact", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Activity> activities;
 
     public Contact(){
