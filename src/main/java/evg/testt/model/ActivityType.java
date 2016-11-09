@@ -11,7 +11,7 @@ public class ActivityType extends BaseModel{
 
     private String activityTypeName;
 
-    @OneToMany(mappedBy = "activityType", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "activityType", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Activity> activities;
 
     public String getActivityType() {
@@ -27,6 +27,11 @@ public class ActivityType extends BaseModel{
     }
 
     public void setActivities(List<Activity> activities) {
-        this.activities = activities;
+        if (this.activities == null) {
+            this.activities = activities;
+        } else {
+            this.activities.retainAll(activities);
+            this.activities.addAll(activities);
+        }
     }
 }

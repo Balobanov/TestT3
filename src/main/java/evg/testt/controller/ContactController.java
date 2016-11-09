@@ -64,6 +64,7 @@ public class ContactController {
     public ModelAndView saveOrUpdate(@ModelAttribute("contact") @Validated Contact contact,
                                   BindingResult bindingResult, Model model) {
         validator.validate(contact, bindingResult);
+
         if (!bindingResult.hasErrors()) {
             try {
                 if(contact.getId() == null || contact.getId() <= 0)
@@ -121,3 +122,20 @@ public class ContactController {
 
 
 }
+
+//    ActivityType a = new ActivityType();
+//        a.setActivityType("Mail");
+//                try {
+//                ats.insert(a);
+//
+//                a = new ActivityType();
+//                a.setActivityType("Skype");
+//                ats.insert(a);
+//
+//                a = new ActivityType();
+//                a.setActivityType("Phone");
+//                ats.insert(a);
+//
+//                } catch (SQLException e) {
+//                e.printStackTrace();
+//                }

@@ -32,7 +32,7 @@ public class Contact extends BaseModel {
     private String city;
     private String postCode;
 
-    @OneToMany(mappedBy = "contact", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "contact", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Activity> activities;
 
     public Contact(){
@@ -107,6 +107,11 @@ public class Contact extends BaseModel {
     }
 
     public void setActivities(List<Activity> activities) {
-        this.activities = activities;
+        if (this.activities == null) {
+            this.activities = activities;
+        } else {
+            this.activities.retainAll(activities);
+            this.activities.addAll(activities);
+        }
     }
 }

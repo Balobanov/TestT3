@@ -99,11 +99,6 @@ public class ActivityController {
                 a.setTitle(activity.getTitle());
                 a.setNotes(activity.getNotes());
 
-                //a.setContact(c);
-                a.setActivityType(at);
-
-                as.insert(a);
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }

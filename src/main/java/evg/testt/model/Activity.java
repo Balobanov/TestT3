@@ -21,11 +21,11 @@ public class Activity extends BaseModel{
     @Temporal(TemporalType.DATE)
     private Calendar date;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "contacts_id")
     private Contact contact;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "activitiesTypes_id")
     private ActivityType activityType;
 
