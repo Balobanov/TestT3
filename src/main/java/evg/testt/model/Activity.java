@@ -1,11 +1,14 @@
 package evg.testt.model;
 
 import net.sf.oval.constraint.Length;
-import net.sf.oval.constraint.NotNull;
+import net.sf.oval.constraint.NotEmpty;
 
 import javax.persistence.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
 
 /**
  * Created by DENNNN on 08.11.2016.
@@ -13,19 +16,20 @@ import java.util.Date;
 @Entity(name = "activities")
 public class Activity extends BaseModel{
 
-    @NotNull
-    @Length(min = 1)
+    @NotEmpty(message = "Must not be empty.")
     private String title;
+
+
     private String notes;
 
     @Temporal(TemporalType.DATE)
-    private Calendar date;
+    private Calendar date = Calendar.getInstance();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contacts_id")
     private Contact contact;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "activitiesTypes_id")
     private ActivityType activityType;
 
@@ -56,12 +60,26 @@ public class Activity extends BaseModel{
         this.notes = notes;
     }
 
-    public Calendar getDate() {
-        return date;
+    public String getDate() {
+        SimpleDateFormat sdtf = new SimpleDateFormat("yyyy-MM-dd");
+        Date d = date.getTime();
+
+        String stringDate;
+
+        stringDate = sdtf.format(d);
+
+        return stringDate;
     }
 
-    public void setDate(Calendar date) {
-        this.date = date;
+    public void setDate(String dateS) {
+        SimpleDateFormat sdtf = new SimpleDateFormat("yyyy-MM-dd");
+        Date d = new Date();
+        try {
+            d = sdtf.parse(dateS);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        date.setTime(d);
     }
 
     public Contact getContact() {

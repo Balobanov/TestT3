@@ -1,5 +1,6 @@
 package evg.testt.controller;
 
+import evg.testt.model.Activity;
 import evg.testt.model.ActivityType;
 import evg.testt.model.Contact;
 import evg.testt.oval.SpringOvalValidator;
@@ -9,6 +10,7 @@ import evg.testt.util.JspPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,10 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by DENNNN on 07.11.2016.
@@ -45,6 +44,13 @@ public class ContactController {
     @RequestMapping(value = "/contacts", method = RequestMethod.GET)
     public ModelAndView toAddContact(Model model)
     {
+        return  new ModelAndView(JspPath.CONTACT).addAllObjects(init());
+    }
+
+    private Map<String, Object> init()
+    {
+        Map<String, Object> attributes = new ModelMap();
+
         Contact contact = new Contact();
         List<Contact> contacts = Collections.EMPTY_LIST;
 
@@ -54,10 +60,10 @@ public class ContactController {
             e.printStackTrace();
         }
 
-        model.addAttribute("contact", contact);
-        model.addAttribute("contacts", contacts);
+        attributes.put("contacts", contacts);
+        attributes.put("contact", contact);
 
-        return  new ModelAndView(JspPath.CONTACT);
+        return attributes;
     }
 
     @RequestMapping(value = "/saveContact", method = RequestMethod.POST)
@@ -76,7 +82,7 @@ public class ContactController {
             }
             return toAddContact(model);
         } else {
-            return new ModelAndView(JspPath.CONTACT);
+            return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
         }
     }
 

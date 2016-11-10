@@ -12,11 +12,13 @@ import evg.testt.util.JspPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.SQLException;
@@ -42,12 +44,19 @@ public class ActivityController {
     @Autowired
     ActivityService as;
 
-    @RequestMapping(value = "/activities")
+    @RequestMapping(value = "/activities", method = RequestMethod.GET)
     public ModelAndView renderActivitypage(Model model)
     {
+        return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init());
+    }
+
+    private Map<String, Object> init()
+    {
+        Map<String, Object> attributes = new ModelMap();
+
         List<Contact> contacts = Collections.EMPTY_LIST;
         List<ActivityType> activityTypes = Collections.EMPTY_LIST;
-        ActivityDto activity = new ActivityDto();
+        Activity activity = new Activity();
 
         try {
             contacts = cs.getAll();
@@ -56,38 +65,20 @@ public class ActivityController {
             e.printStackTrace();
         }
 
-        ModelAndView modelV = new ModelAndView(JspPath.ACTIVITIES);
+        attributes.put("contacts", contacts);
+        attributes.put("activityTypes", activityTypes);
+        attributes.put("activity", activity);
 
-        modelV.addObject("contacts", contacts);
-
-        modelV.addObject("activityTypes", activityTypes);
-
-        modelV.addObject("activity", activity);
-
-        return modelV;
+        return attributes;
     }
 
     @RequestMapping(value = "/saveAvtivity", method = RequestMethod.POST)
-    public ModelAndView saveActivity(@ModelAttribute("activity") @Validated ActivityDto activity,
+    public ModelAndView saveOrUpdateActivity(@ModelAttribute("activity") @Validated Activity activity,
                                      BindingResult bindingResult,
                                      Model model,
                                      Integer c_id,
                                      Integer act_id)
     {
-        Activity a = new Activity();
-        SimpleDateFormat sdtf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        Calendar calendar;
-
-        try {
-            date = sdtf.parse(activity.getDate());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        calendar = new GregorianCalendar();
-        calendar.setTime(date);
-
         validator.validate(activity, bindingResult);
         if (!bindingResult.hasErrors()) {
 
@@ -95,17 +86,60 @@ public class ActivityController {
                 Contact c = cs.getById(c_id);
                 ActivityType at = ats.getById(act_id);
 
-                a.setDate(calendar);
-                a.setTitle(activity.getTitle());
-                a.setNotes(activity.getNotes());
+                if(activity.getId() == null || activity.getId() <= 0) {
+                    as.insert(activity);
+                }
+                    activity.setContact(c);
+                    activity.setActivityType(at);
+                    as.update(activity);
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
+            return renderActivitypage(model);
         } else {
-            return new ModelAndView(JspPath.ACTIVITIES);
+            return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init()).addObject("activity", activity);
         }
-        return null;
+
+    }
+
+    @RequestMapping(value = "/editActivity", method = RequestMethod.GET)
+    public ModelAndView edit(@RequestParam(required = true) int id, Model model) {
+
+        Activity activity = new Activity();
+
+        if(id > 0) {
+            try {
+                activity = as.getById(id);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init()).addObject("activity", activity);
+        }
+        else
+            return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init());
+    }
+
+    @RequestMapping(value = "/deleteaAtivity", method = RequestMethod.POST)
+    public ModelAndView delete(@RequestParam(required = true) int id, Model model) {
+
+        Activity activity = null;
+        try
+        {
+            activity = as.getById(id);
+            if(activity != null)
+                as.delete(activity);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return renderActivitypage(model);
+    }
+
+    @RequestMapping(value = "/toContactPage", method = RequestMethod.POST)
+    public String toActivities()
+    {
+        return "redirect:/contacts";
     }
 }

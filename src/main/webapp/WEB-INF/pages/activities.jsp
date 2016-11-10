@@ -11,6 +11,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <style>
+        .error {
+            color: red; font-weight: bold;
+        }
+    </style>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -19,33 +24,30 @@
 </head>
 <body>
 
+<form action="/toContactPage" method="post" id="activities" >
+    <input type="submit" value="Contacts" >
+</form>
 
+<c:choose>
+    <c:when test="${not empty activityTypes && not empty contacts}">
 <table>
     <tr>
         <td>Activity</td>
         <td>Contact name</td>
     </tr>
 
-    <tr>
-        <td><label>--------------------------------------------</label></td>
-    </tr>
-
     <c:forEach items="${contacts}" var="contact">
-        <tr>
             <c:forEach items="${contact.activities}" var="activity">
-                <td><label>${activity.title}</label></td>
-                <td><label>${contact.firstName} ${contact.firstName}</label></td>
+                <tr>
+                    <td><a href="/editActivity?id=${activity.id}">${activity.title}</a></td>
+                    <td><label>${contact.firstName} ${contact.firstName}</label></td>
+                </tr>
             </c:forEach>
-        </tr>
     </c:forEach>
-
-    <tr>
-        <td><label>--------------------------------------------</label></td>
-    </tr>
 
     <tr><td>||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||</td></tr>
 
-    <sf:form modelAttribute="activity" method="post" action="/saveAvtivity">
+    <sf:form modelAttribute="activity" method="post" action="/saveAvtivity" id="saveActivity">
         <tr>
             <td>
                 <label>Activities types</label>
@@ -93,8 +95,21 @@
         <tr>
             <td><input type="submit" value="Add/Edit Activity"></td>
         </tr>
+    </sf:form>
+
+    <tr>
+        <form method="POST" action="/deleteaAtivity?id=${(activity.id == null || activity.id <= 0) ? 0 : activity.id}"
+              id="deleteActivity" onSubmit="if(!confirm('Are you sure you want delete activity?')){return false;}">
+            <td><input type="submit" value="Delete activity"></td>
+        </form>
+    </tr>
 </table>
-</sf:form>
+
+    </c:when>
+    <c:otherwise>
+        <label> ADD CONTACT AND ACTIVITI TYPES FIRST </label>
+    </c:otherwise>
+    </c:choose>
 
 
 <script type="text/javascript">

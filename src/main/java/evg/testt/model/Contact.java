@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,8 +33,8 @@ public class Contact extends BaseModel {
     private String city;
     private String postCode;
 
-    @OneToMany(mappedBy = "contact", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Activity> activities;
+    @OneToMany(mappedBy = "contact", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
+    private List<Activity> activities = new ArrayList<>();
 
     public Contact(){
     }
@@ -107,10 +108,8 @@ public class Contact extends BaseModel {
     }
 
     public void setActivities(List<Activity> activities) {
-        if (this.activities == null) {
-            this.activities = activities;
-        } else {
-            this.activities.retainAll(activities);
+        this.activities.clear();
+        if (activities != null) {
             this.activities.addAll(activities);
         }
     }

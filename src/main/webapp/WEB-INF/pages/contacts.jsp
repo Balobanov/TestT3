@@ -90,7 +90,7 @@
     </table>
 
 
-    <table>
+
         <table width="600px">
             <tr>
                 <td><p>Contacts</p></td>
@@ -103,7 +103,25 @@
             </c:forEach>
             <tr><td><label>-----------------------------------------------------------</label></td></tr>
         </table>
-    </table>
+
+            <table width="600px">
+                <tr>
+                    <td><p>   Activities   </p></td>
+                </tr>
+                <tr>
+                    <td><label>Title</label></td>
+                    <td><label>Type</label></td>
+                    <td><label>Date</label></td>
+                </tr>
+                        <c:forEach items="${contact.activities}" var="act">
+                            <tr>
+                                <td> ${act.title} </td>
+                                <td> ${act.activityType} </td>
+                                <td> ${act.date} </td>
+                            </tr>
+                        </c:forEach>
+
+            </table>
 
 </body>
 </html>

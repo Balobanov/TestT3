@@ -1,6 +1,7 @@
 package evg.testt.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,8 +12,8 @@ public class ActivityType extends BaseModel{
 
     private String activityTypeName;
 
-    @OneToMany(mappedBy = "activityType", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Activity> activities;
+    @OneToMany(mappedBy = "activityType", fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Activity> activities = new ArrayList<>();
 
     public String getActivityType() {
         return activityTypeName;
@@ -27,11 +28,14 @@ public class ActivityType extends BaseModel{
     }
 
     public void setActivities(List<Activity> activities) {
-        if (this.activities == null) {
-            this.activities = activities;
-        } else {
-            this.activities.retainAll(activities);
+        this.activities.clear();
+        if (activities != null) {
             this.activities.addAll(activities);
         }
+    }
+
+    @Override
+    public String toString() {
+        return activityTypeName;
     }
 }
