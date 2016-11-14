@@ -33,7 +33,7 @@ public class Contact extends BaseModel {
     private String city;
     private String postCode;
 
-    @OneToMany(mappedBy = "contact", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "contact", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Activity> activities = new ArrayList<>();
 
     public Contact(){
