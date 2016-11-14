@@ -19,7 +19,6 @@
         <version.jackson>1.9.13</version.jackson>
         <!-- Hibernate -->
         <hibernate.version>5.0.1.Final</hibernate.version>
-        <hibernate.validator.version>5.2.1.Final</hibernate.validator.version>
         <hibernate.commons.version>5.0.0.Final</hibernate.commons.version>
         <!-- Validation-->
         <oval.version>1.84</oval.version>
@@ -113,6 +112,13 @@
         </dependency>
 
         <!-- Hibernate -->
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.3.1.Final</version>
+        </dependency>
+
         <dependency>
             <groupId>org.hibernate.common</groupId>
             <artifactId>hibernate-commons-annotations</artifactId>
@@ -152,13 +158,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.jdbc.version}</version>
-        </dependency>
-
-        <!--oval validator-->
-        <dependency>
-            <groupId>net.sf.oval</groupId>
-            <artifactId>oval</artifactId>
-            <version>${oval.version}</version>
         </dependency>
 
         <!-- Mongo Driver -->
@@ -277,9 +276,8 @@
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
+            <version>1.1.0.Final</version>
         </dependency>
-
 
     </dependencies>
 

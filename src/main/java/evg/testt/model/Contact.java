@@ -1,11 +1,9 @@
 package evg.testt.model;
 
-import net.sf.oval.constraint.MatchPattern;
-import net.sf.oval.constraint.NotEmpty;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +14,16 @@ import java.util.List;
 @Entity(name = "contacts")
 public class Contact extends BaseModel {
 
-    @NotEmpty(message = "Must not be empty.")
+    @NotNull(message = "Must not be empty.")
+    @Size(min = 3, message = "Name must be more than 3 character")
     private String firstName;
 
-    @NotEmpty(message = "Must not be empty.")
+    @NotNull(message = "Must not be empty.")
+    @Size(min = 3, message = "First name must be more than 3 character")
     private String lastName;
 
-    @NotEmpty(message = "Must not be empty.")
-    @MatchPattern(pattern = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9]" +
+    @NotNull(message = "Must not be empty.")
+    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9]" +
             "(?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message = "Invalid email address.")
     private String email;
 

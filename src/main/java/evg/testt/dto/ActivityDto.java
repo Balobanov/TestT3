@@ -1,12 +1,12 @@
 package evg.testt.dto;
 
-import net.sf.oval.constraint.Length;
-import net.sf.oval.constraint.MatchPattern;
-import net.sf.oval.constraint.NotEmpty;
-import net.sf.oval.constraint.NotNull;
+
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Calendar;
 
 /**
@@ -16,13 +16,13 @@ public class ActivityDto{
 
         private Integer id;
 
-        @NotEmpty
-        @Length(min = 1, message = "Title can not be empty.")
+        @NotNull
+        @Size(min = 1, message = "Title can not be empty.")
         private String title;
 
         private String notes;
 
-        @MatchPattern( pattern = "[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])", message = "Not correct date.")
+        @Pattern( regexp = "[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])", message = "Not correct date.")
         private String date;
 
     public String getTitle() {

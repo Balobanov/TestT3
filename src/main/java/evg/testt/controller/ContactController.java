@@ -1,9 +1,9 @@
 package evg.testt.controller;
 
+import evg.testt.dto.ContactActivityDTO;
 import evg.testt.model.Activity;
 import evg.testt.model.ActivityType;
 import evg.testt.model.Contact;
-import evg.testt.oval.SpringOvalValidator;
 import evg.testt.service.ActivityTypeService;
 import evg.testt.service.ContactService;
 import evg.testt.util.JspPath;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -27,9 +28,6 @@ import java.util.*;
  */
 @Controller
 public class ContactController {
-
-    @Autowired
-    SpringOvalValidator validator;
 
     @Autowired
     ContactService cs;
@@ -47,19 +45,28 @@ public class ContactController {
         return  new ModelAndView(JspPath.CONTACT).addAllObjects(init());
     }
 
+    /*
+     *  Common data
+     */
     private Map<String, Object> init()
     {
         Map<String, Object> attributes = new ModelMap();
+        List<ActivityType> activityTypes = Collections.EMPTY_LIST;
+        ContactActivityDTO contact = new ContactActivityDTO();
 
-        Contact contact = new Contact();
+        contact.setContact(new Contact());
+        contact.setActivity(new Activity());
+
         List<Contact> contacts = Collections.EMPTY_LIST;
 
         try {
             contacts = cs.getAll();
+            activityTypes = ats.getAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+        attributes.put("activityTypes", activityTypes);
         attributes.put("contacts", contacts);
         attributes.put("contact", contact);
 
@@ -67,16 +74,15 @@ public class ContactController {
     }
 
     @RequestMapping(value = "/saveContact", method = RequestMethod.POST)
-    public ModelAndView saveOrUpdate(@ModelAttribute("contact") @Validated Contact contact,
+    public ModelAndView saveOrUpdate(@Valid @ModelAttribute("contact") ContactActivityDTO contact,
                                   BindingResult bindingResult, Model model) {
-        validator.validate(contact, bindingResult);
 
         if (!bindingResult.hasErrors()) {
             try {
-                if(contact.getId() == null || contact.getId() <= 0)
-                    cs.insert(contact);
+                if(contact.getContact().getId() == null || contact.getContact().getId() <= 0)
+                    cs.insert(contact.getContact());
                 else
-                    cs.update(contact);
+                    cs.update(contact.getContact());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -105,19 +111,17 @@ public class ContactController {
     public ModelAndView edit(@RequestParam(required = true) int id, Model model) {
 
         Contact c = new Contact();
-        List<Contact> contacts = Collections.EMPTY_LIST;
+        ContactActivityDTO contactActivityDTO = new ContactActivityDTO();
 
         try {
             c = cs.getById(id);
-            contacts = cs.getAll();
+            contactActivityDTO.setContact(c);
+            contactActivityDTO.setActivity(new Activity());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        model.addAttribute("contact", c);
-        model.addAttribute("contacts", contacts);
-
-        return  new ModelAndView(JspPath.CONTACT);
+        return  new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contactActivityDTO);
     }
 
     @RequestMapping(value = "/toActivityPage", method = RequestMethod.POST)
@@ -127,21 +131,13 @@ public class ContactController {
     }
 
 
-}
+    @RequestMapping(value = "/saveContactandActivity", method = RequestMethod.POST)
+    public ModelAndView saveContactandActivity(@Valid @ModelAttribute("contact") ContactActivityDTO contact,
+                                               BindingResult bindingResult,
+                                               Model model,
+                                               Integer act_id) {
 
-//    ActivityType a = new ActivityType();
-//        a.setActivityType("Mail");
-//                try {
-//                ats.insert(a);
-//
-//                a = new ActivityType();
-//                a.setActivityType("Skype");
-//                ats.insert(a);
-//
-//                a = new ActivityType();
-//                a.setActivityType("Phone");
-//                ats.insert(a);
-//
-//                } catch (SQLException e) {
-//                e.printStackTrace();
-//                }
+
+        return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
+    }
+}

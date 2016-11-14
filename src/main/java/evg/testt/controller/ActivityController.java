@@ -4,7 +4,6 @@ import evg.testt.dto.ActivityDto;
 import evg.testt.model.Activity;
 import evg.testt.model.ActivityType;
 import evg.testt.model.Contact;
-import evg.testt.oval.SpringOvalValidator;
 import evg.testt.service.ActivityService;
 import evg.testt.service.ActivityTypeService;
 import evg.testt.service.ContactService;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,9 +31,6 @@ import java.util.*;
  */
 @Controller
 public class ActivityController {
-
-    @Autowired
-    SpringOvalValidator validator;
 
     @Autowired
     ContactService cs;
@@ -73,13 +70,12 @@ public class ActivityController {
     }
 
     @RequestMapping(value = "/saveAvtivity", method = RequestMethod.POST)
-    public ModelAndView saveOrUpdateActivity(@ModelAttribute("activity") @Validated Activity activity,
+    public ModelAndView saveOrUpdateActivity(@Valid @ModelAttribute("activity") Activity activity,
                                      BindingResult bindingResult,
                                      Model model,
                                      Integer c_id,
                                      Integer act_id)
     {
-        validator.validate(activity, bindingResult);
         if (!bindingResult.hasErrors()) {
 
             try {
