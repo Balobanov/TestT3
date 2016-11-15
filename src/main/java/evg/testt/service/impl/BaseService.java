@@ -4,12 +4,20 @@ import evg.testt.service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import javax.persistence.EntityManager;
 import java.sql.SQLException;
 import java.util.List;
 
 public abstract class BaseService <T , P extends JpaRepository<T,Integer>> implements Service<T> {
 
     protected  P dao;
+
+    protected EntityManager em;
+
+    @Autowired
+    public void setEm(EntityManager em) {
+        this.em = em;
+    }
 
     @Autowired
     public void setPersistence(P dao){

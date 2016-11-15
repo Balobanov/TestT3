@@ -43,7 +43,8 @@ public class ContactController {
     @Autowired
     ActivityService as;
 
-    private static String searchString = "";
+    private static String searchName= "";
+    private static String searchType = "first";
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String redirTocontact()
@@ -70,9 +71,11 @@ public class ContactController {
         List<Contact> contacts = Collections.EMPTY_LIST;
 
         try {
-            Query q = em.createQuery("from contacts c where c.firstName like :name");
-            q.setParameter("name", "%" + searchString + "%");
-            contacts = q.getResultList();
+
+          if(searchType.equals("first"))
+              contacts = cs.findByFirstName(searchName);
+          else
+              contacts = cs.findByLastName(searchName);
 
             activityTypes = ats.getAll();
         } catch (SQLException e) {
@@ -192,13 +195,11 @@ public class ContactController {
         return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
     }
 
-    @Autowired
-    EntityManager em;
-
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public ModelAndView search(@RequestParam(required = true) String name)
+    public ModelAndView search(@RequestParam(required = true) String name, HttpServletRequest request)
     {
-        searchString = name;
+        searchName = name;
+        searchType = request.getParameter("type");
         return new ModelAndView(JspPath.CONTACT).addAllObjects(init());
     }
 }

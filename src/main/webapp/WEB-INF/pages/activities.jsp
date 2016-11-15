@@ -36,13 +36,11 @@
         <td>Contact name</td>
     </tr>
 
-    <c:forEach items="${contacts}" var="contact">
-            <c:forEach items="${contact.activities}" var="activity">
+    <c:forEach items="${activities}" var="activity">
                 <tr>
                     <td><a href="/editActivity?id=${activity.id}">${activity.title}</a></td>
-                    <td><label>${contact.firstName} ${contact.firstName}</label></td>
+                    <td><label>${activity.contact.firstName} ${activity.contact.lastName}</label></td>
                 </tr>
-            </c:forEach>
     </c:forEach>
 
     <tr><td>||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||</td></tr>
@@ -107,7 +105,7 @@
 
     </c:when>
     <c:otherwise>
-        <label> ADD CONTACT AND ACTIVITI TYPES FIRST </label>
+        <label> ADD CONTACT AND ACTIVITY TYPES FIRST </label>
     </c:otherwise>
     </c:choose>
 

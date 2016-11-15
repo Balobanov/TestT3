@@ -33,8 +33,10 @@
 
 
 <form action="/search" method="post" id="search" >
-    <input type="text" name="name">
-    <input type="submit" value="Find" >
+    <input type="text" name="name"><Br>
+    <input type="radio" name="type" value="first" checked>First name<Br>
+    <input type="radio" name="type" value="last">Last name<Br>
+    <input type="submit" value="Find" ><Br>
 </form>
 
 

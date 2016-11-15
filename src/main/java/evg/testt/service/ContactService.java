@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface ContactService extends Service<Contact>{
     List<Contact> findByFirstName(String firstName);
-    List<Contact> findByFirstNameAndLastName(String firstName, String lastName);
+    List<Contact> findByLastName(String lastName);
 }

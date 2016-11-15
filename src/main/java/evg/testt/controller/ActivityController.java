@@ -51,18 +51,21 @@ public class ActivityController {
     {
         Map<String, Object> attributes = new ModelMap();
 
+        List<Activity> activities = Collections.EMPTY_LIST;
         List<Contact> contacts = Collections.EMPTY_LIST;
         List<ActivityType> activityTypes = Collections.EMPTY_LIST;
         Activity activity = new Activity();
 
         try {
             contacts = cs.getAll();
+            activities = as.getAll();
             activityTypes = ats.getAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         attributes.put("contacts", contacts);
+        attributes.put("activities", activities);
         attributes.put("activityTypes", activityTypes);
         attributes.put("activity", activity);
 
@@ -118,18 +121,19 @@ public class ActivityController {
 
     @RequestMapping(value = "/deleteaAtivity", method = RequestMethod.POST)
     public ModelAndView delete(@RequestParam(required = true) int id, Model model) {
-
         Activity activity = null;
         try
         {
-            activity = as.getById(id);
-            if(activity != null)
+            if(id > 0) {
+                activity = as.getById(id);
+                activity.setContact(null);
+                as.update(activity);
                 as.delete(activity);
+            }
         }
         catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        {e.printStackTrace();}
+
         return renderActivitypage(model);
     }
 

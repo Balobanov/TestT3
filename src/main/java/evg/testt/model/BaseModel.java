@@ -29,4 +29,12 @@ public class BaseModel {
 
         return id.equals(baseModel.id);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 1;
+        hash = hash * 31 + (id == null ? 0 : id.hashCode());
+        return hash;
+
+    }
 }

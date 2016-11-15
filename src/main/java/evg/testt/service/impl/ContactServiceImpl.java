@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
 import java.util.List;
 
 /**
@@ -16,16 +17,20 @@ import java.util.List;
 @Service
 @Transactional
 public class ContactServiceImpl extends BaseService<Contact, ContactDao> implements ContactService {
+
     @Override
     public List<Contact> findByFirstName(String firstName) {
-        return dao.findByFirstName(firstName);
+        Query q = em.createQuery("from contacts c where c.firstName like :name");
+        q.setParameter("name", "%" + firstName + "%");
+        return q.getResultList();
     }
 
     @Override
-    public List<Contact> findByFirstNameAndLastName(String firstName, String lastName) {
-        return dao.findByFirstNameAndLastName(firstName, lastName);
+    public List<Contact> findByLastName(String lastName) {
+        Query q = em.createQuery("from contacts c where c.lastName like :name");
+        q.setParameter("name", "%" + lastName + "%");
+        return q.getResultList();
     }
-
 //    @Override
 //    public void insert(Contact contact){
 //        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
