@@ -14,7 +14,6 @@ public class ContactActivityDTO {
     @Valid
     private Contact contact;
 
-    @Valid
     private Activity activity;
 
     public Contact getContact() {

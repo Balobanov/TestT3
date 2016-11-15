@@ -87,8 +87,74 @@
         </tr>
 
             <tr>
-                <td><input type="submit" value="Add contact/Edit Contact"></td>
+                <td><input type="submit" value="Add contact/Edit Contact" name="save"></td>
             </tr>
+
+</table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Название модали</h4>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table table-bordered" width="600px">
+
+                        <caption>Add activity and contact</caption>
+
+                        <tr>
+                            <th>Activities types</th>
+                            <th>For Contact</th>
+                            <th>Title</th>
+                            <th>Notes</th>
+                            <th>Date</th>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <select id="activType_id" name="act_id">
+                                    <c:forEach items="${activityTypes}" var="at">
+                                        <option value="${at.id}">${at.activityType}</option>
+                                    </c:forEach>
+                                </select>
+                            </td>
+
+                            <td>
+                                <label>${contact.contact.firstName} ${contact.contact.lastName}</label>
+                            </td>
+
+                            <td>
+                                <sf:hidden path="activity.id"></sf:hidden>
+                                <sf:input path="activity.title" ></sf:input>
+                                <sf:errors path="activity.title" cssClass="error"></sf:errors>
+                            </td>
+
+                            <td>
+                                <sf:textarea path="activity.notes" rows="10" cols="45"></sf:textarea>
+                                <sf:errors path="activity.notes" cssClass="error"></sf:errors>
+                            </td>
+
+                            <td>
+                                <sf:input path="activity.date" id = "datepick"></sf:input>
+                                <sf:errors path="activity.date" cssClass="error"></sf:errors>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    <input type="submit" value="Add Activity" name="save">
+                </div>
+            </div>
+        </div>
+    </div>
+
 
         </sf:form>
 
@@ -99,7 +165,7 @@
             </form>
         </tr>
 
-    </table>
+
 
 
 
@@ -140,82 +206,13 @@
 
 
 
-<sf:form method="post" action="/saveContactandActivity" modelAttribute="contact">
 
-<table class="table table-bordered" width="600px">
-
-    <caption>Add activity and contact</caption>
-
-        <tr>
-            <th>Activities types</th>
-            <th>For Contact</th>
-            <th>Title</th>
-            <th>Notes</th>
-            <th>Date</th>
-        </tr>
-
-        <tr>
-            <td>
-                <select id="activType_id" name="act_id">
-                    <c:forEach items="${activityTypes}" var="at">
-                        <option value="${at.id}">${at.activityType}</option>
-                    </c:forEach>
-                </select>
-            </td>
-
-            <td>
-                <label>${contact.contact.firstName} ${contact.contact.lastName}</label>
-            </td>
-
-            <td>
-                <sf:hidden path="activity.id"></sf:hidden>
-                <sf:input path="activity.title" ></sf:input>
-                <sf:errors path="activity.title" cssClass="error"></sf:errors>
-            </td>
-
-            <td>
-                <sf:textarea path="activity.notes" rows="10" cols="45"></sf:textarea>
-                <sf:errors path="activity.notes" cssClass="error"></sf:errors>
-            </td>
-
-            <td>
-                <sf:input path="activity.date" id = "datepick"></sf:input>
-                <sf:errors path="activity.date" cssClass="error"></sf:errors>
-            </td>
-        </tr>
+<!-- Button trigger modal -->
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+    Add activity
+</button>
 
 
-        <tr>
-            <td><input type="submit" value="Add/Edit Activity"></td>
-        </tr>
-</table>
-</sf:form>
-
-<%--<!-- Button trigger modal -->--%>
-<%--<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">--%>
-    <%--Add activity--%>
-<%--</button>--%>
-
-<%--<!-- Modal -->--%>
-<%--<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">--%>
-    <%--<div class="modal-dialog">--%>
-        <%--<div class="modal-content">--%>
-            <%--<div class="modal-header">--%>
-                <%--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>--%>
-                <%--<h4 class="modal-title" id="myModalLabel">Название модали</h4>--%>
-            <%--</div>--%>
-            <%--<div class="modal-body">--%>
-                <%----%>
-                <%----%>
-                <%----%>
-            <%--</div>--%>
-            <%--<div class="modal-footer">--%>
-                <%--<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>--%>
-                <%--<button type="button" class="btn btn-primary">Сохранить изменения</button>--%>
-            <%--</div>--%>
-        <%--</div>--%>
-    <%--</div>--%>
-<%--</div>--%>
 
 <script type="text/javascript">
     $("#activType_id").val($("#activType_id option:first").val());

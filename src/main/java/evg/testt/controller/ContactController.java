@@ -4,6 +4,7 @@ import evg.testt.dto.ContactActivityDTO;
 import evg.testt.model.Activity;
 import evg.testt.model.ActivityType;
 import evg.testt.model.Contact;
+import evg.testt.service.ActivityService;
 import evg.testt.service.ActivityTypeService;
 import evg.testt.service.ContactService;
 import evg.testt.util.JspPath;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.*;
@@ -34,6 +36,10 @@ public class ContactController {
 
     @Autowired
     ActivityTypeService ats;
+
+
+    @Autowired
+    ActivityService as;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String redirTocontact()
@@ -75,21 +81,59 @@ public class ContactController {
 
     @RequestMapping(value = "/saveContact", method = RequestMethod.POST)
     public ModelAndView saveOrUpdate(@Valid @ModelAttribute("contact") ContactActivityDTO contact,
-                                  BindingResult bindingResult, Model model) {
+                                     BindingResult bindingResult, Model model, HttpServletRequest request, Integer act_id) {
 
-        if (!bindingResult.hasErrors()) {
+        String pressedButton = request.getParameter("save");
+
+        // Добавить только контакт
+        if (!bindingResult.hasErrors() && pressedButton.equals("Add contact/Edit Contact")){
             try {
                 if(contact.getContact().getId() == null || contact.getContact().getId() <= 0)
                     cs.insert(contact.getContact());
-                else
-                    cs.update(contact.getContact());
+                else {
+                    Contact c = contact.getContact();
+                    c.setActivities(cs.getById(c.getId()).getActivities());
+                    cs.update(c);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             return toAddContact(model);
-        } else {
-            return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
         }
+
+        //Добавить контакт и активность
+        if (!bindingResult.hasErrors() && pressedButton.equals("Add Activity")){
+            Activity activity = contact.getActivity();
+            Contact c = contact.getContact();
+
+            ActivityType activityType = null;
+
+            // Если заголовок не установлен вернуться на страницу
+            if(activity.getTitle() == null || activity.getTitle().length() < 3){
+                bindingResult.rejectValue("activity.title", "activity.title", "Title must be more than 3 character");
+                return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
+            }
+
+            try {
+                activityType = ats.getById(act_id);
+                if(contact.getContact().getId() == null || contact.getContact().getId() <= 0)
+                    cs.insert(c);
+                else
+                    c = cs.getById(c.getId());
+
+                    as.insert(activity);
+                    activity.setContact(c);
+                    activity.setActivityType(activityType);
+                    as.update(activity);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return toAddContact(model);
+        }
+
+
+        return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
     }
 
     @RequestMapping(value = "/deleteContact", method = RequestMethod.POST)

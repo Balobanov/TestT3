@@ -34,7 +34,7 @@ public class Contact extends BaseModel {
     private String postCode;
 
     @OneToMany(mappedBy = "contact", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<Activity> activities = new ArrayList<>();
+    private List<Activity> activities;
 
     public Contact(){
     }
