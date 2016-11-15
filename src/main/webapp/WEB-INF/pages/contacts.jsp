@@ -32,6 +32,12 @@
 
 
 
+<form action="/search" method="post" id="search" >
+    <input type="text" name="name">
+    <input type="submit" value="Find" >
+</form>
+
+
 <sf:form method="post" action="/saveContact" modelAttribute="contact" id="saveContact">
 <table>
         <tr>

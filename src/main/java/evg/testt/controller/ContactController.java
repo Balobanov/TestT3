@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.sql.SQLException;
@@ -40,6 +42,8 @@ public class ContactController {
 
     @Autowired
     ActivityService as;
+
+    private static String searchString = "";
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String redirTocontact()
@@ -66,7 +70,10 @@ public class ContactController {
         List<Contact> contacts = Collections.EMPTY_LIST;
 
         try {
-            contacts = cs.getAll();
+            Query q = em.createQuery("from contacts c where c.firstName like :name");
+            q.setParameter("name", "%" + searchString + "%");
+            contacts = q.getResultList();
+
             activityTypes = ats.getAll();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -183,5 +190,15 @@ public class ContactController {
 
 
         return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
+    }
+
+    @Autowired
+    EntityManager em;
+
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    public ModelAndView search(@RequestParam(required = true) String name)
+    {
+        searchString = name;
+        return new ModelAndView(JspPath.CONTACT).addAllObjects(init());
     }
 }
