@@ -10,6 +10,13 @@
         .error {
             color: red; font-weight: bold;
         }
+
+        #myModal .modal-dialog  {width:110%;}
+        /*#myModal {*/
+            /*top:5%;*/
+            /*right:50%;*/
+            /*outline: none;*/
+        /*}*/
     </style>
 
 
