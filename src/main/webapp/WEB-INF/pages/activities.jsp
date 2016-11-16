@@ -13,7 +13,7 @@
 <head>
     <style>
         .error {
-            color: red; font-weight: bold;
+            color: #ff00df; font-weight: bold;
         }
     </style>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -30,6 +30,12 @@
 
 <c:choose>
     <c:when test="${not empty activityTypes && not empty contacts}">
+
+        <form action="/searchActivity" method="post" id="search" >
+            <input type="text" name="name" value="${searchSubject}"><Br>
+            <input type="submit" value="Find" ><Br>
+        </form>
+
 <table>
     <tr>
         <td>Activity</td>

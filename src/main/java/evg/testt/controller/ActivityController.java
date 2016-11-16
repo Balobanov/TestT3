@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -41,6 +42,8 @@ public class ActivityController {
     @Autowired
     ActivityService as;
 
+    private static String searchSubject = "";
+
     @RequestMapping(value = "/activities", method = RequestMethod.GET)
     public ModelAndView renderActivitypage(Model model)
     {
@@ -58,7 +61,7 @@ public class ActivityController {
 
         try {
             contacts = cs.getAll();
-            activities = as.getAll();
+            activities = as.findBySubject(searchSubject);
             activityTypes = ats.getAll();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -68,6 +71,7 @@ public class ActivityController {
         attributes.put("activities", activities);
         attributes.put("activityTypes", activityTypes);
         attributes.put("activity", activity);
+        attributes.put("searchSubject", searchSubject);
 
         return attributes;
     }
@@ -141,5 +145,12 @@ public class ActivityController {
     public String toActivities()
     {
         return "redirect:/contacts";
+    }
+
+    @RequestMapping(value = "/searchActivity", method = RequestMethod.POST)
+    public ModelAndView search(@RequestParam(required = true) String name, HttpServletRequest request)
+    {
+        searchSubject = name;
+        return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init());
     }
 }

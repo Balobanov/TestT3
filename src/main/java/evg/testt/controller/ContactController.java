@@ -85,6 +85,7 @@ public class ContactController {
         attributes.put("activityTypes", activityTypes);
         attributes.put("contacts", contacts);
         attributes.put("contact", contact);
+        attributes.put("searchName", searchName);
 
         return attributes;
     }
@@ -195,7 +196,7 @@ public class ContactController {
         return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    @RequestMapping(value = "/searchContact", method = RequestMethod.POST)
     public ModelAndView search(@RequestParam(required = true) String name, HttpServletRequest request)
     {
         searchName = name;

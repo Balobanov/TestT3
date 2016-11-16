@@ -32,8 +32,8 @@
 
 
 
-<form action="/search" method="post" id="search" >
-    <input type="text" name="name"><Br>
+<form action="/searchContact" method="post" id="search" >
+    <input type="text" name="name" value="${searchName}"><Br>
     <input type="radio" name="type" value="first" checked>First name<Br>
     <input type="radio" name="type" value="last">Last name<Br>
     <input type="submit" value="Find" ><Br>
