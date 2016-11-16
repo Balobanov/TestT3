@@ -1,21 +1,6 @@
-DROP TABLE 'testT'.'users';
-CREATE TABLE `testT`.`users` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `login` VARCHAR(20) CHARACTER SET 'utf8' NOT NULL,
-  `password` VARCHAR(60) CHARACTER SET 'utf8' NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
-  UNIQUE INDEX `login_UNIQUE` (`login` ASC));
-
-DROP TABLE 'testT'.'roles';
-CREATE TABLE `testT`.`roles` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `role` VARCHAR(15) CHARACTER SET 'utf8' NOT NULL,
-  `user_id` INT NOT NULL,
-  PRIMARY KEY (`id`));
-
-INSERT INTO `testT`.`users` (`login`, `password`)
-VALUES ('admin', '$2a$08$gfKJLDxbYkl8KgWtec7Lw.Ayh/QFj3cDKOCMXpSsPD0FQD0fk/DNu');
-
-INSERT INTO `testT`.`roles` (`role`, `user_id`)
-VALUES ('ROLE_ADMIN', 1);
+USE testt3;
+insert into hibernate_sequence(next_val) values (0);
+INSERT INTO `testt3`.`activitiestypes` (`id`, `activityTypeName`) VALUES (1, 'Mail');
+INSERT INTO `testt3`.`activitiestypes` (`id`, `activityTypeName`) VALUES (2, 'Skype');
+INSERT INTO `testt3`.`activitiestypes` (`id`, `activityTypeName`) VALUES (3, 'Meeting');
+INSERT INTO `testt3`.`activitiestypes` (`id`, `activityTypeName`) VALUES (4, 'Hangouts');

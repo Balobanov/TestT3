@@ -11,7 +11,7 @@
             color: red; font-weight: bold;
         }
 
-        #myModal .modal-dialog  {width:110%;}
+        #myModal .modal-dialog  {width:100%;}
         /*#myModal {*/
             /*top:5%;*/
             /*right:50%;*/
@@ -120,6 +120,8 @@
                 <div class="modal-body">
 
                     <table class="table table-bordered" width="600px">
+                        <c:choose>
+                        <c:when test="${not empty activityTypes}">
 
                         <caption>Add activity and contact</caption>
 
@@ -162,7 +164,11 @@
                         </tr>
 
                     </table>
-
+                    </c:when>
+                    <c:otherwise>
+                        <label> ADD ACTIVITY TYPES FIRST </label>
+                    </c:otherwise>
+                    </c:choose>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
