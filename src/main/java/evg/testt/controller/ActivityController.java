@@ -4,7 +4,6 @@ import evg.testt.dto.ActivityDto;
 import evg.testt.model.Activity;
 import evg.testt.model.ActivityType;
 import evg.testt.model.Contact;
-import evg.testt.oval.SpringOvalValidator;
 import evg.testt.service.ActivityService;
 import evg.testt.service.ActivityTypeService;
 import evg.testt.service.ContactService;
@@ -21,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,9 +34,6 @@ import java.util.*;
 public class ActivityController {
 
     @Autowired
-    SpringOvalValidator validator;
-
-    @Autowired
     ContactService cs;
 
     @Autowired
@@ -43,6 +41,8 @@ public class ActivityController {
 
     @Autowired
     ActivityService as;
+
+    private static String searchSubject = "";
 
     @RequestMapping(value = "/activities", method = RequestMethod.GET)
     public ModelAndView renderActivitypage(Model model)
@@ -54,32 +54,35 @@ public class ActivityController {
     {
         Map<String, Object> attributes = new ModelMap();
 
+        List<Activity> activities = Collections.EMPTY_LIST;
         List<Contact> contacts = Collections.EMPTY_LIST;
         List<ActivityType> activityTypes = Collections.EMPTY_LIST;
         Activity activity = new Activity();
 
         try {
             contacts = cs.getAll();
+            activities = as.findBySubject(searchSubject);
             activityTypes = ats.getAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         attributes.put("contacts", contacts);
+        attributes.put("activities", activities);
         attributes.put("activityTypes", activityTypes);
         attributes.put("activity", activity);
+        attributes.put("searchSubject", searchSubject);
 
         return attributes;
     }
 
     @RequestMapping(value = "/saveAvtivity", method = RequestMethod.POST)
-    public ModelAndView saveOrUpdateActivity(@ModelAttribute("activity") @Validated Activity activity,
+    public ModelAndView saveOrUpdateActivity(@Valid @ModelAttribute("activity") Activity activity,
                                      BindingResult bindingResult,
                                      Model model,
                                      Integer c_id,
                                      Integer act_id)
     {
-        validator.validate(activity, bindingResult);
         if (!bindingResult.hasErrors()) {
 
             try {
@@ -122,18 +125,19 @@ public class ActivityController {
 
     @RequestMapping(value = "/deleteaAtivity", method = RequestMethod.POST)
     public ModelAndView delete(@RequestParam(required = true) int id, Model model) {
-
         Activity activity = null;
         try
         {
-            activity = as.getById(id);
-            if(activity != null)
+            if(id > 0) {
+                activity = as.getById(id);
+                activity.setContact(null);
+                as.update(activity);
                 as.delete(activity);
+            }
         }
         catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        {e.printStackTrace();}
+
         return renderActivitypage(model);
     }
 
@@ -141,5 +145,12 @@ public class ActivityController {
     public String toActivities()
     {
         return "redirect:/contacts";
+    }
+
+    @RequestMapping(value = "/searchActivity", method = RequestMethod.POST)
+    public ModelAndView search(@RequestParam(required = true) String name, HttpServletRequest request)
+    {
+        searchSubject = name;
+        return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init());
     }
 }

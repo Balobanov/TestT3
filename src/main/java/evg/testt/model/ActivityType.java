@@ -28,10 +28,7 @@ public class ActivityType extends BaseModel{
     }
 
     public void setActivities(List<Activity> activities) {
-        this.activities.clear();
-        if (activities != null) {
-            this.activities.addAll(activities);
-        }
+        this.activities = activities;
     }
 
     @Override

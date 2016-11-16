@@ -1,9 +1,10 @@
 package evg.testt.controller;
 
+import evg.testt.dto.ContactActivityDTO;
 import evg.testt.model.Activity;
 import evg.testt.model.ActivityType;
 import evg.testt.model.Contact;
-import evg.testt.oval.SpringOvalValidator;
+import evg.testt.service.ActivityService;
 import evg.testt.service.ActivityTypeService;
 import evg.testt.service.ContactService;
 import evg.testt.util.JspPath;
@@ -19,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -29,13 +34,17 @@ import java.util.*;
 public class ContactController {
 
     @Autowired
-    SpringOvalValidator validator;
-
-    @Autowired
     ContactService cs;
 
     @Autowired
     ActivityTypeService ats;
+
+
+    @Autowired
+    ActivityService as;
+
+    private static String searchName= "";
+    private static String searchType = "first";
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String redirTocontact()
@@ -47,43 +56,95 @@ public class ContactController {
         return  new ModelAndView(JspPath.CONTACT).addAllObjects(init());
     }
 
+    /*
+     *  Common data
+     */
     private Map<String, Object> init()
     {
         Map<String, Object> attributes = new ModelMap();
+        List<ActivityType> activityTypes = Collections.EMPTY_LIST;
+        ContactActivityDTO contact = new ContactActivityDTO();
 
-        Contact contact = new Contact();
+        contact.setContact(new Contact());
+        contact.setActivity(new Activity());
+
         List<Contact> contacts = Collections.EMPTY_LIST;
 
         try {
-            contacts = cs.getAll();
+
+          if(searchType.equals("first"))
+              contacts = cs.findByFirstName(searchName);
+          else
+              contacts = cs.findByLastName(searchName);
+
+            activityTypes = ats.getAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+        attributes.put("activityTypes", activityTypes);
         attributes.put("contacts", contacts);
         attributes.put("contact", contact);
+        attributes.put("searchName", searchName);
 
         return attributes;
     }
 
     @RequestMapping(value = "/saveContact", method = RequestMethod.POST)
-    public ModelAndView saveOrUpdate(@ModelAttribute("contact") @Validated Contact contact,
-                                  BindingResult bindingResult, Model model) {
-        validator.validate(contact, bindingResult);
+    public ModelAndView saveOrUpdate(@Valid @ModelAttribute("contact") ContactActivityDTO contact,
+                                     BindingResult bindingResult, Model model, HttpServletRequest request, Integer act_id) {
 
-        if (!bindingResult.hasErrors()) {
+        String pressedButton = request.getParameter("save");
+
+        // Добавить только контакт
+        if (!bindingResult.hasErrors() && pressedButton.equals("Add contact/Edit Contact")){
             try {
-                if(contact.getId() == null || contact.getId() <= 0)
-                    cs.insert(contact);
-                else
-                    cs.update(contact);
+                if(contact.getContact().getId() == null || contact.getContact().getId() <= 0)
+                    cs.insert(contact.getContact());
+                else {
+                    Contact c = contact.getContact();
+                    c.setActivities(cs.getById(c.getId()).getActivities());
+                    cs.update(c);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             return toAddContact(model);
-        } else {
-            return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
         }
+
+        //Добавить контакт и активность
+        if (!bindingResult.hasErrors() && pressedButton.equals("Add Activity")){
+            Activity activity = contact.getActivity();
+            Contact c = contact.getContact();
+
+            ActivityType activityType = null;
+
+            // Если заголовок не установлен вернуться на страницу
+            if(activity.getTitle() == null || activity.getTitle().length() < 3){
+                bindingResult.rejectValue("activity.title", "activity.title", "Title must be more than 3 character");
+                return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
+            }
+
+            try {
+                activityType = ats.getById(act_id);
+                if(contact.getContact().getId() == null || contact.getContact().getId() <= 0)
+                    cs.insert(c);
+                else
+                    c = cs.getById(c.getId());
+
+                    as.insert(activity);
+                    activity.setContact(c);
+                    activity.setActivityType(activityType);
+                    as.update(activity);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return toAddContact(model);
+        }
+
+
+        return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
     }
 
     @RequestMapping(value = "/deleteContact", method = RequestMethod.POST)
@@ -105,19 +166,17 @@ public class ContactController {
     public ModelAndView edit(@RequestParam(required = true) int id, Model model) {
 
         Contact c = new Contact();
-        List<Contact> contacts = Collections.EMPTY_LIST;
+        ContactActivityDTO contactActivityDTO = new ContactActivityDTO();
 
         try {
             c = cs.getById(id);
-            contacts = cs.getAll();
+            contactActivityDTO.setContact(c);
+            contactActivityDTO.setActivity(new Activity());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        model.addAttribute("contact", c);
-        model.addAttribute("contacts", contacts);
-
-        return  new ModelAndView(JspPath.CONTACT);
+        return  new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contactActivityDTO);
     }
 
     @RequestMapping(value = "/toActivityPage", method = RequestMethod.POST)
@@ -127,21 +186,21 @@ public class ContactController {
     }
 
 
-}
+    @RequestMapping(value = "/saveContactandActivity", method = RequestMethod.POST)
+    public ModelAndView saveContactandActivity(@Valid @ModelAttribute("contact") ContactActivityDTO contact,
+                                               BindingResult bindingResult,
+                                               Model model,
+                                               Integer act_id) {
 
-//    ActivityType a = new ActivityType();
-//        a.setActivityType("Mail");
-//                try {
-//                ats.insert(a);
-//
-//                a = new ActivityType();
-//                a.setActivityType("Skype");
-//                ats.insert(a);
-//
-//                a = new ActivityType();
-//                a.setActivityType("Phone");
-//                ats.insert(a);
-//
-//                } catch (SQLException e) {
-//                e.printStackTrace();
-//                }
+
+        return new ModelAndView(JspPath.CONTACT).addAllObjects(init()).addObject("contact", contact);
+    }
+
+    @RequestMapping(value = "/searchContact", method = RequestMethod.POST)
+    public ModelAndView search(@RequestParam(required = true) String name, HttpServletRequest request)
+    {
+        searchName = name;
+        searchType = request.getParameter("type");
+        return new ModelAndView(JspPath.CONTACT).addAllObjects(init());
+    }
+}

@@ -1,9 +1,8 @@
 package evg.testt.model;
 
-import net.sf.oval.constraint.Length;
-import net.sf.oval.constraint.NotEmpty;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,7 +15,8 @@ import java.util.Date;
 @Entity(name = "activities")
 public class Activity extends BaseModel{
 
-    @NotEmpty(message = "Must not be empty.")
+    @NotNull(message = "Must not be empty.")
+    @Size(min = 3, message = "Name must be more than 3 character")
     private String title;
 
 

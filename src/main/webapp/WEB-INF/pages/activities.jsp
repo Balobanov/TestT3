@@ -13,7 +13,7 @@
 <head>
     <style>
         .error {
-            color: red; font-weight: bold;
+            color: #ff00df; font-weight: bold;
         }
     </style>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -24,25 +24,31 @@
 </head>
 <body>
 
+<a href="<c:url value="/logout" />" >Logout</a><br>
+
 <form action="/toContactPage" method="post" id="activities" >
     <input type="submit" value="Contacts" >
 </form>
 
 <c:choose>
     <c:when test="${not empty activityTypes && not empty contacts}">
+
+        <form action="/searchActivity" method="post" id="search" >
+            <input type="text" name="name" value="${searchSubject}"><Br>
+            <input type="submit" value="Find" ><Br>
+        </form>
+
 <table>
     <tr>
         <td>Activity</td>
         <td>Contact name</td>
     </tr>
 
-    <c:forEach items="${contacts}" var="contact">
-            <c:forEach items="${contact.activities}" var="activity">
+    <c:forEach items="${activities}" var="activity">
                 <tr>
                     <td><a href="/editActivity?id=${activity.id}">${activity.title}</a></td>
-                    <td><label>${contact.firstName} ${contact.firstName}</label></td>
+                    <td><label>${activity.contact.firstName} ${activity.contact.lastName}</label></td>
                 </tr>
-            </c:forEach>
     </c:forEach>
 
     <tr><td>||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||</td></tr>
@@ -107,7 +113,7 @@
 
     </c:when>
     <c:otherwise>
-        <label> ADD CONTACT AND ACTIVITI TYPES FIRST </label>
+        <label> ADD CONTACT AND ACTIVITY TYPES FIRST </label>
     </c:otherwise>
     </c:choose>
 
