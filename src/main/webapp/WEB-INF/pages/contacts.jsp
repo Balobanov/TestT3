@@ -26,6 +26,8 @@
 <header>
 </header>
 
+<a href="<c:url value="/logout" />" >Logout</a><br>
+
 <form action="/toActivityPage" method="post" id="activities" >
 <input type="submit" value="Activities" >
 </form>

@@ -24,6 +24,8 @@
 </head>
 <body>
 
+<a href="<c:url value="/logout" />" >Logout</a><br>
+
 <form action="/toContactPage" method="post" id="activities" >
     <input type="submit" value="Contacts" >
 </form>
