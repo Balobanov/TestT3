@@ -8,8 +8,8 @@
 	http://www.springframework.org/schema/security/spring-security.xsd">
 
     <http auto-config="true" use-expressions="true">
-        <!--<intercept-url pattern="/**" access="permitAll" />-->
-        <intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+
+        <!--<intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>-->
         <form-login/>
         <logout logout-success-url="/contacts"/>
         <csrf disabled="true"/>

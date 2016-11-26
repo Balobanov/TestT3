@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -50,11 +51,7 @@ public class ContactController {
     public String redirTocontact()
     {return "redirect:/contacts";}
 
-    @RequestMapping(value = "/contacts", method = RequestMethod.GET)
-    public ModelAndView toAddContact(Model model)
-    {
-        return  new ModelAndView(JspPath.CONTACT).addAllObjects(init());
-    }
+
 
     /*
      *  Common data
@@ -203,4 +200,66 @@ public class ContactController {
         searchType = request.getParameter("type");
         return new ModelAndView(JspPath.CONTACT).addAllObjects(init());
     }
+
+
+    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    public ModelAndView test(HttpServletRequest req,
+                             @ModelAttribute("wrapper") Wrapper wrapper,
+                             BindingResult bindResult, ModelMap model)
+    {
+
+        return new ModelAndView(JspPath.CONTACT);
+    }
+
+    @RequestMapping(value = "/contacts", method = RequestMethod.GET)
+    public ModelAndView toAddContact(Model model)
+    {
+        Wrapper w = new Wrapper();
+
+        List<TestEntity> list = new LinkedList<>();
+        list.add(new TestEntity(11, "Vasyan"));
+        list.add(new TestEntity(12, "Petyan"));
+
+        w.setTestEntityList(list);
+
+        return  new ModelAndView(JspPath.CONTACT).addObject("wrapper", w);
+    }
 }
+
+//<form id="wrapper" action="/test" method="post">
+//
+//<label for="testEntityList0.name">College Name</label>
+//<input id="testEntityList0.name" name="testEntityList[0].name" type="text" value="vasya"/>
+//<input id="testEntityList0.id" name="testEntityList[0].id" type="text" value="1"/>
+//
+//<label for="testEntityList1.name">College Name</label>
+//<input id="testEntityList1.name" name="testEntityList[1].name" type="text" value="petya"/>
+//<input id="testEntityList1.id" name="testEntityList[1].id" type="text" value="2"/>
+//
+//<input type="submit">
+//</form>
+
+
+//<form id="wrapper" action="/test" method="post">
+//
+//<label for="testEntityList0.name">College Name</label>
+//<input id="testEntityList0.name" name="testEntityList[0].name" type="text" value="Vasyan"/>
+//<input id="testEntityList0.id" name="testEntityList[0].id" type="text" value="11"/>
+//
+//<input id="testEntityList0.mailsList0.mail" name="testEntityList[0].mailsList[0].mail" type="text" value="dddddd"/>
+//<input id="testEntityList0.mailsList1.mail" name="testEntityList[0].mailsList[1].mail" type="text" value="dddddd"/>
+//
+//
+//
+//<label for="testEntityList1.name">College Name</label>
+//<input id="testEntityList1.name" name="testEntityList[1].name" type="text" value="Petyan"/>
+//<input id="testEntityList1.id" name="testEntityList[1].id" type="text" value="12"/>
+//
+//<input id="testEntityList1.mailsList0.mail" name="testEntityList[1].mailsList[0].mail" type="text" value="dddddd"/>
+//<input id="testEntityList1.mailsList1.mail" name="testEntityList[1].mailsList[1].mail" type="text" value="dddddd"/>
+//
+//<input id="flag1" name="flag" type="checkbox" value="true"/><input type="hidden" name="_flag" value="on"/>
+//
+//<input type="submit">
+//</form>
+
