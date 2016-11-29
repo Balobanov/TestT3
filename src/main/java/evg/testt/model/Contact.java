@@ -12,7 +12,7 @@ import java.util.List;
  * Created on 9/10/15.
  */
 @Entity(name = "contacts")
-public class Contact extends BaseModel {
+public class Contact extends BaseModel implements Serializable {
 
     @NotNull(message = "Must not be empty.")
     @Size(min = 3, message = "Name must be more than 3 character")
@@ -32,9 +32,6 @@ public class Contact extends BaseModel {
     private String address2;
     private String city;
     private String postCode;
-
-    @OneToMany(mappedBy = "contact", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<Activity> activities;
 
     public Contact(){
     }
@@ -101,13 +98,5 @@ public class Contact extends BaseModel {
 
     public void setPostCode(String postCode) {
         this.postCode = postCode;
-    }
-
-    public List<Activity> getActivities() {
-        return activities;
-    }
-
-    public void setActivities(List<Activity> activities) {
-        this.activities = activities;
     }
 }
