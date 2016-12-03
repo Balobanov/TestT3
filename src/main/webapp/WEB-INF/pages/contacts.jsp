@@ -52,13 +52,15 @@
         /////// SEND FORM PARAMETERS TO CONTROLLER //
         ////////////////////////////////////////////
 
-        $('#save').click(function(event) {
+//        $('#contactDto').submit(function(event) { // disabled from
+
+            $('#save').click(function (event) { // send ajax with button
 
             var id = $('#id').val();
             var firstName = $('#firstName').val();
             var json = { "id" : id, "firstName" : firstName};
 
-            //var json = $('#contactDto').serializeObject(); // working, just another method to get json
+            //var json = $('#contactDto').serializeObject();
 
             $.ajax({
                 url: '/contactsSaveAjax',
@@ -72,6 +74,7 @@
                 }
             });
 
+//            event.preventDefault();
         });
 
 
