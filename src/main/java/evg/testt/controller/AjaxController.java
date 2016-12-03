@@ -1,6 +1,8 @@
 package evg.testt.controller;
+import evg.testt.dto.MoveLead;
 import evg.testt.util.JspPath;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,38 +28,18 @@ public class AjaxController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/moveLead", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
-    public HttpStatus ajaxCall(@RequestBody MoveLead moveLead)
+    @RequestMapping(value = "/moveLead", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String moveLead(@RequestBody MoveLead moveLead)
     {
-        System.out.println("Deleting lead from card: " + moveLead.from);
-        System.out.println("Moving lead to card: " + moveLead.destination);
-        return HttpStatus.ACCEPTED;
+        if(moveLead.getFrom() != moveLead.getDestination()) {
+            System.out.println("Deleting lead from card: " + moveLead.getFrom());
+            System.out.println("Moving lead to card: " + moveLead.getDestination());
+            return HttpStatus.ACCEPTED.getReasonPhrase();
+        }
+
+        return HttpStatus.BAD_REQUEST.getReasonPhrase();
     }
 
-    private class MoveLead
-    {
-        int destination;
-        int from;
-
-        public MoveLead() {
-        }
-
-        public int getDestination() {
-            return destination;
-        }
-
-        public void setDestination(int destination) {
-            this.destination = destination;
-        }
-
-        public int getFrom() {
-            return from;
-        }
-
-        public void setFrom(int from) {
-            this.from = from;
-        }
-    }
     private class Ajax
     {
         int a;

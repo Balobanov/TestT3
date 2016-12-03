@@ -123,17 +123,20 @@
 
                     var json = { "destination" : destination, "from" : from};
                     //alert("dest = " + destination + ". from = " + from);
-                    $.ajax({
-                        url: '/moveLead',
-                        dataType: 'json',
-                        type: 'GET',
-                        data: JSON.stringify(json),
-                        contentType : 'application/json',
 
-                        success: function(data){
-                            alert(data.value);
-                        }
-                    });
+                    if(destination != from) {
+                        $.ajax({
+                            url: '/moveLead',
+                            dataType: 'json',
+                            type: 'POST',
+                            data: JSON.stringify(json),
+                            contentType: 'application/json',
+
+                            success: function (data) {
+                                //alert(data.value);
+                            }
+                        });
+                    }
                 }
             });
 

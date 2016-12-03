@@ -58,9 +58,11 @@
 
             var id = $('#id').val();
             var firstName = $('#firstName').val();
-            var json = { "id" : id, "firstName" : firstName};
+            var json = { "id" : id, "firstName" : firstName, emails : [ {"email": "1@wdaw.ru"}, {"email": "1@wdaw.ru"} ]};
 
             //var json = $('#contactDto').serializeObject();
+
+            //alert(JSON.stringify(json));
 
             $.ajax({
                 url: '/contactsSaveAjax',
