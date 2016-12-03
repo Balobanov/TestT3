@@ -8,4 +8,5 @@ public class JspPath {
     public static final String HOME = "/";
     public static final String CONTACT = "contacts";
     public static final String ACTIVITIES = "activities";
+    public static final String AJAX = "ajax";
 }

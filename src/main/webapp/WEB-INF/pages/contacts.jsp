@@ -16,11 +16,11 @@
 <header>
 </header>
 
-<form id="contactDto" name="contactDto" action="/contactsSaveAjax" method="post">
+<%--<form id="contactDto" name="contactDto" action="/contactsSaveAjax" method="post">--%>
     <input id="id" name="id" type="text">
     <input id="firstName" name="firstName" type="text">
-    <button id="save" type="submit">Save</button>
-</form>
+    <input type="button" id="save" value="Save">
+<%--</form>--%>
 
 
 <label id="hello"> Hello </label>
@@ -52,27 +52,26 @@
         /////// SEND FORM PARAMETERS TO CONTROLLER //
         ////////////////////////////////////////////
 
-        $('#contactDto').submit(function(event) {
+        $('#save').click(function(event) {
 
-//            var id = $('#id').val();
-//            var firstName = $('#firstName').val();
-//            var json = { "id" : id, "firstName" : firstName};
+            var id = $('#id').val();
+            var firstName = $('#firstName').val();
+            var json = { "id" : id, "firstName" : firstName};
 
-            var json = $('#contactDto').serializeObject();
+            //var json = $('#contactDto').serializeObject(); // working, just another method to get json
 
             $.ajax({
-                url: $("#contactDto").attr( "action"),
+                url: '/contactsSaveAjax',
                 data: JSON.stringify(json),
                 type: "POST",
                 contentType : 'application/json',
 
-                success: function(smartphone) {
+                success: function(data) {
 
-                    $("#callback").html(smartphone.firstName);
+                    $("#callback").html(data.firstName);
                 }
             });
 
-            event.preventDefault();
         });
 
 
