@@ -44,65 +44,19 @@ public class ActivityController {
 
     private static String searchSubject = "";
 
-    @RequestMapping(value = "/activities", method = RequestMethod.GET)
-    public ModelAndView renderActivitypage(Model model)
-    {
-        return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init());
-    }
 
-    private Map<String, Object> init()
-    {
-        Map<String, Object> attributes = new ModelMap();
-
-        List<Activity> activities = Collections.EMPTY_LIST;
-        List<Contact> contacts = Collections.EMPTY_LIST;
-        List<ActivityType> activityTypes = Collections.EMPTY_LIST;
-        Activity activity = new Activity();
-
-        try {
-            contacts = cs.getAll();
-            activities = as.findBySubject(searchSubject);
-            activityTypes = ats.getAll();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        attributes.put("contacts", contacts);
-        attributes.put("activities", activities);
-        attributes.put("activityTypes", activityTypes);
-        attributes.put("activity", activity);
-        attributes.put("searchSubject", searchSubject);
-
-        return attributes;
+    private Map<String, Object> init() {
+      return null;
     }
 
     @RequestMapping(value = "/saveAvtivity", method = RequestMethod.POST)
     public ModelAndView saveOrUpdateActivity(@Valid @ModelAttribute("activity") Activity activity,
-                                     BindingResult bindingResult,
-                                     Model model,
-                                     Integer c_id,
-                                     Integer act_id)
-    {
-        if (!bindingResult.hasErrors()) {
+                                             BindingResult bindingResult,
+                                             Model model,
+                                             Integer c_id,
+                                             Integer act_id) {
+        return null;
 
-            try {
-                Contact c = cs.getById(c_id);
-                ActivityType at = ats.getById(act_id);
-
-                if(activity.getId() == null || activity.getId() <= 0) {
-                    as.insert(activity);
-                }
-                    activity.setContact(c);
-                    activity.setActivityType(at);
-                    as.update(activity);
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return renderActivitypage(model);
-        } else {
-            return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init()).addObject("activity", activity);
-        }
 
     }
 
@@ -111,46 +65,25 @@ public class ActivityController {
 
         Activity activity = new Activity();
 
-        if(id > 0) {
+        if (id > 0) {
             try {
                 activity = as.getById(id);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init()).addObject("activity", activity);
-        }
-        else
+        } else
             return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init());
     }
 
     @RequestMapping(value = "/deleteaAtivity", method = RequestMethod.POST)
     public ModelAndView delete(@RequestParam(required = true) int id, Model model) {
-        Activity activity = null;
-        try
-        {
-            if(id > 0) {
-                activity = as.getById(id);
-                activity.setContact(null);
-                as.update(activity);
-                as.delete(activity);
-            }
-        }
-        catch (SQLException e)
-        {e.printStackTrace();}
-
-        return renderActivitypage(model);
+        return null;
     }
 
     @RequestMapping(value = "/toContactPage", method = RequestMethod.POST)
-    public String toActivities()
-    {
+    public String toActivities() {
         return "redirect:/contacts";
     }
 
-    @RequestMapping(value = "/searchActivity", method = RequestMethod.POST)
-    public ModelAndView search(@RequestParam(required = true) String name, HttpServletRequest request)
-    {
-        searchSubject = name;
-        return new ModelAndView(JspPath.ACTIVITIES).addAllObjects(init());
-    }
 }

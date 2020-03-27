@@ -16,13 +16,10 @@ public class ActivityDto{
 
         private Integer id;
 
-        @NotNull
-        @Size(min = 1, message = "Title can not be empty.")
         private String title;
 
         private String notes;
 
-        @Pattern( regexp = "[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])", message = "Not correct date.")
         private String date;
 
     public String getTitle() {
